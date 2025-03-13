@@ -1,11 +1,12 @@
 import express from "express";
+import { envs } from "./envs";
+import { AlunosRoutes } from "./routes/alunos.routes";
 
 const app = express();
 
 // qual o padrão de comunicação de api? rest
 
 app.use(express.json()); // app entenda e responsa em json
-
 // ... definição de rotas
 app.get("/", (req, res, next) => {
     res.status(200).json({
@@ -14,7 +15,8 @@ app.get("/", (req, res, next) => {
     });
 });
 
+app.use(AlunosRoutes.bind());
 
-app.listen(3030, () => console.log("Server is running...")); // executa uma função para saber se o servidor está funcionando 
+const PORT = 3030; // Define a porta corretamente
 
-// 
+app.listen(PORT, () => console.log(`Server is running on port ${PORT}`)); // executa uma função para saber se o servidor está funcionando 

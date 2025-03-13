@@ -1,0 +1,25 @@
+// npx migrate dev // migrar model no prisma banco de dados
+
+// npx prisma generate // atualizar banco de dados após migrar banco de dados é OBRIGATÓRIO
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Aluno {
+  id           String   @id @default(uuid()) @db.Uuid
+  nome         String   @db.VarChar(100)
+  email        String   @unique @db.VarChar(100)
+  idade        Int?     @db.SmallInt
+  senha        String   @db.Text
+  authToken    String?  @map("auth_token") @db.Uuid
+  criadoEm     DateTime @default(now()) @map("criado_em")
+  atualizadoEm DateTime @default(now()) @updatedAt @map("atualizado_em") // toda vez que um registro fro atualizado com o valor de agora
+
+  @@map("alunos")
+}
