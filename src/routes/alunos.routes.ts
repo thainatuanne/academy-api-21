@@ -12,11 +12,11 @@ export class AlunosRoutes {
 
         router.get("/alunos/:id", controller.buscarPorID) // buscar um aluno por ID
 
-        router.post("/alunos"); // cadastrando um aluno
+        router.post("/alunos", controller.cadastrar); // cadastrando um aluno
 
-        router.put("/alunos/:id"); // atualizar um aluno
+        router.put("/alunos/:id", controller.atualizar); // atualizar um aluno
 
-        router.delete("/alunos/:id"); // deletar um aluno
+        router.delete("/alunos/:id", controller.deletar); // deletar um aluno
 
         return router;
     }

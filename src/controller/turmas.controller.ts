@@ -1,20 +1,22 @@
 import { Request, Response } from "express";
 import { AlunosService } from "../services/alunos.service";
 import { onError } from "../utils/on-error";
+import { TurmasService } from "../services/turmas.service";
 
-export class AlunosController {
+export class TurmasController {
     public async listar(req: Request, res: Response): Promise<void> {
         try {
-            const { nome } = req.query;
+            const { programa, edicao } = req.query;
 
-            const service = new AlunosService();
+            const service = new TurmasService();
             const resultado = await service.listar({
-                nome: nome as string | undefined,
+                programa: programa as string | undefined,
+                edicao: edicao ? Number(edicao) : undefined,
             });
 
             res.status(200).json({
                 sucesso: true,
-                mensagem: "Alunos listados com sucesso",
+                mensagem: "Turmas listadas com sucesso",
                 dados: resultado,
             });
         } catch (error) {
@@ -26,12 +28,12 @@ export class AlunosController {
         try {
             const { id } = req.params;
 
-            const service = new AlunosService();
+            const service = new TurmasService();
             const resultado = await service.buscarPorId(id);
 
             res.status(200).json({
                 sucesso: true,
-                mensagem: "Aluno encontrado",
+                mensagem: "Turma encontrada",
                 dados: resultado,
             });
         } catch (error) {
@@ -41,14 +43,18 @@ export class AlunosController {
 
     public async cadastrar(req: Request, res: Response): Promise<void> {
         try {
-            const { nome, email, idade, senha } = req.body;
+            const { edicao, maxAlunos, programa } = req.body;
 
-            const service = new AlunosService();
-            const resultado = await service.cadastrar({ nome, email, senha, idade });
+            const service = new TurmasService();
+            const resultado = await service.cadastrar({
+                edicao,
+                maxAlunos,
+                programa,
+            });
 
             res.status(201).json({
                 sucesso: true,
-                mensagem: "Novo aluno cadastrado",
+                mensagem: "Nova turma cadastrada",
                 dados: resultado,
             });
         } catch (error) {
@@ -59,20 +65,19 @@ export class AlunosController {
     public async atualizar(req: Request, res: Response): Promise<void> {
         try {
             const { id } = req.params;
-            const { nome, email, idade, senha } = req.body;
+            const { edicao, maxAlunos, programa } = req.body;
 
-            const service = new AlunosService();
+            const service = new TurmasService();
             const resultado = await service.atualizar({
                 id,
-                nome,
-                email,
-                senha,
-                idade,
+                edicao,
+                maxAlunos,
+                programa,
             });
 
             res.status(200).json({
                 sucesso: true,
-                mensagem: "Aluno atualizado",
+                mensagem: "Turma atualizada",
                 dados: resultado,
             });
         } catch (error) {
@@ -84,12 +89,12 @@ export class AlunosController {
         try {
             const { id } = req.params;
 
-            const service = new AlunosService();
+            const service = new TurmasService();
             const resultado = await service.excluir(id);
 
             res.status(200).json({
                 sucesso: true,
-                mensagem: "Aluno excluido",
+                mensagem: "Turma excluida",
                 dados: resultado,
             });
         } catch (error) {
