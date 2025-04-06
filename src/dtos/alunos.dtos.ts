@@ -1,3 +1,5 @@
+// DTO -> Data Transfer Object -> objeto de transferencia de dados estruturados
+
 export interface CadastrarAlunoDto {
     nome: string;
     idade?: number;
