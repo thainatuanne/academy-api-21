@@ -5,6 +5,7 @@ export interface CadastrarAlunoDto {
     idade?: number;
     email: string;
     senha: string;
+    tipo: "M" | "T" | "F";
 }
 
 export interface ListarAlunosDto {

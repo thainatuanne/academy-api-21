@@ -11,15 +11,22 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum TipoAluno {
+  M
+  T
+  F
+}
+
 model Aluno {
-  id           String   @id @default(uuid()) @db.Uuid
-  nome         String   @db.VarChar(100)
-  email        String   @unique @db.VarChar(100)
-  idade        Int?     @db.SmallInt
-  senha        String   @db.Text
-  authToken    String?  @map("auth_token") @db.Uuid
-  criadoEm     DateTime @default(now()) @map("criado_em")
-  atualizadoEm DateTime @default(now()) @updatedAt @map("atualizado_em") // toda vez que um registro fro atualizado com o valor de agora
+  id           String    @id @default(uuid()) @db.Uuid
+  nome         String    @db.VarChar(100)
+  email        String    @unique @db.VarChar(100)
+  idade        Int?      @db.SmallInt
+  senha        String    @db.Text
+  tipo         TipoAluno @default(M)
+  authToken    String?   @map("auth_token") @db.Uuid
+  criadoEm     DateTime  @default(now()) @map("criado_em")
+  atualizadoEm DateTime  @default(now()) @updatedAt @map("atualizado_em") // toda vez que um registro fro atualizado com o valor de agora
 
   endereco   Endereco?
   projetos   Projeto[]
