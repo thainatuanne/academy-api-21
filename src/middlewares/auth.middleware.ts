@@ -1,8 +1,9 @@
-import { NextFunction, Request, Response } from "express";
-import { onError } from "../utils/on-error";
+import { Request, Response, NextFunction } from "express";
+import jwt from "jsonwebtoken";
 import { HTTPError } from "../utils/https.error";
-import { prismaClient } from "../database/prisma.client";
-import { validate as isValidUid } from "uuid";
+import { onError } from "../utils/on-error";
+
+const secret = process.env.JWT_SECRET!;
 
 export async function authMiddleware(
     req: Request,
@@ -10,36 +11,36 @@ export async function authMiddleware(
     next: NextFunction
 ) {
     try {
-        const bearerToken = req.headers.authorization;
+        const authHeader = req.headers.authorization;
 
-        if (!bearerToken) {
+        if (!authHeader) {
             throw new HTTPError(401, "Token de autenticação ausente");
         }
 
-        const [, token] = bearerToken.split(" ");
+        const [, token] = authHeader.split(" ");
 
-        // No nosso caso, o token deve ser no formato uuid
-        if (!isValidUid(token)) {
-            throw new HTTPError(400, "Token com formato inválido");
-        }
+        const decoded = jwt.verify(token, secret) as {
+            id: string;
+            email: string;
+            nome: string;
+            tipo: "M" | "T" | "F";
+        };
 
-        const alunoEncontrado = await prismaClient.aluno.findFirst({
-            where: { authToken: token },
-        });
-
-        if (!alunoEncontrado) {
-            throw new HTTPError(401, "Token inválido");
-        }
-
-        // adicionar novos dados na requisição
         req.alunoLogado = {
-            id: alunoEncontrado.id,
-            email: alunoEncontrado.email,
-            nome: alunoEncontrado.nome,
+            id: decoded.id,
+            nome: decoded.nome,
+            email: decoded.email,
+            tipo: decoded.tipo,
         };
 
         next();
-    } catch (error) {
-        onError(error, res);
+    } catch (error: any) {
+        if (error.name === "JsonWebTokenError") {
+            onError(new HTTPError(401, "Token inválido"), res);
+        } else if (error.name === "TokenExpiredError") {
+            onError(new HTTPError(401, "Token expirado"), res);
+        } else {
+            onError(error, res);
+        }
     }
 }

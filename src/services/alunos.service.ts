@@ -17,6 +17,7 @@ export class AlunosService {
         nome,
         senha,
         idade,
+        tipo
     }: CadastrarAlunoDto): Promise<AlunoParcial> {
         const emailJaCadastrado = await prismaClient.aluno.findUnique({
             where: { email: email },
@@ -32,6 +33,7 @@ export class AlunosService {
                 email,
                 senha,
                 idade,
+                tipo
             },
             omit: {
                 authToken: true,
