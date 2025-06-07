@@ -10,10 +10,16 @@ import { FasRoutes } from "./routes/fas.routes";
 import { ProjetosRoutes } from "./routes/projetos.routes";
 import { AvaliacoesRoutes } from "./routes/avaliacoes.routes";
 
+import swaggerUi from "swagger-ui-express";
+import swaggerJsdoc from "swagger-jsdoc";
+import { swaggerOptions } from "./swaggerConfig";
 const app = express();
 
 app.use(express.json());
 app.use(cors());
+
+const specs = swaggerJsdoc(swaggerOptions);
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 
 app.get("/", (_, res) => {
     res.status(200).json({
